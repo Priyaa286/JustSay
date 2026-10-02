@@ -1,0 +1,32 @@
+// Prisma v7+ requires standard client generator or configuration
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id           String        @id @default(uuid())
+  name         String
+  nickname     String?
+  balance      Int           @default(0) // Balance in paise (integer to prevent floating-point inaccuracies). Positive balance means customer owes vendor.
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  item        String?
+  quantity    String?
+  amount      Int      // Amount in paise (integer). E.g. ₹50.00 = 5000 paise
+  type        String   // CREDIT (goods taken/credit added, +balance) or PAYMENT (cash paid, -balance)
+  transcript  String?
+  confirmed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
