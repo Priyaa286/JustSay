@@ -9,7 +9,9 @@ const envSchema = z.object({
   DATABASE_URL: z.string().optional().default('file:./dev.db'),
   GROQ_API_KEY: z.string().optional(),
   CLIENT_URL: z.string().default('http://localhost:5173'),
-  MOCK_TRANSCRIPTION: z.string().optional().default('false').transform((val) => val.toLowerCase() === 'true')
+  MOCK_TRANSCRIPTION: z.string().optional().default('false').transform((val) => val.toLowerCase() === 'true'),
+  GROQ_WHISPER_MODEL: z.string().optional().default('whisper-large-v3'),
+  GROQ_LLAMA_MODEL: z.string().optional().default('llama-3.3-70b-versatile')
 });
 
 const parseEnv = () => {

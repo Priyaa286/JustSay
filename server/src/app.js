@@ -8,6 +8,7 @@ const customerRoutes = require('./routes/customer.routes');
 const ledgerRoutes = require('./routes/ledger.routes');
 const transcriptionRoutes = require('./routes/transcription.routes');
 const extractionRoutes = require('./routes/extraction.routes');
+const voiceRoutes = require('./routes/voice.routes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -23,6 +24,7 @@ app.use('/api/customers', customerRoutes);
 app.use('/api/ledger', ledgerRoutes);
 app.use('/api/transcribe', transcriptionRoutes);
 app.use('/api/extract', extractionRoutes);
+app.use('/api/voice', voiceRoutes);
 
 // 404 handler
 app.use((req, res, next) => {
