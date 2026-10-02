@@ -1,0 +1,263 @@
+[
+  {
+    "id": "TC-01",
+    "description": "Direct credit with explicit person, amount, and verb",
+    "input": "Ravi ku 50 rupees add pannu",
+    "category": "DIRECT_CREDIT",
+    "expected": {
+      "person": "Ravi",
+      "amount": 50,
+      "transactionType": "CREDIT",
+      "needsClarification": false
+    }
+  },
+  {
+    "id": "TC-02",
+    "description": "Direct payment with explicit person and amount",
+    "input": "Ravi 100 kuduthutaan",
+    "category": "DIRECT_PAYMENT",
+    "expected": {
+      "person": "Ravi",
+      "amount": 100,
+      "transactionType": "PAYMENT",
+      "needsClarification": false
+    }
+  },
+  {
+    "id": "TC-03",
+    "description": "Credit with item and quantity but missing amount (requires clarification)",
+    "input": "Mani-ku tea add pannu",
+    "category": "MISSING_AMOUNT",
+    "expected": {
+      "person": "Mani",
+      "item": "tea",
+      "quantity": 1,
+      "amount": null,
+      "transactionType": "CREDIT",
+      "needsClarification": true
+    }
+  },
+  {
+    "id": "TC-04",
+    "description": "Pronoun reference to account side without person or amount",
+    "input": "avanoda account la podu",
+    "category": "RELATIVE_REFERENCE",
+    "expected": {
+      "person": null,
+      "reference": {
+        "type": "ACCOUNT_SIDE",
+        "value": "avanoda account la podu"
+      },
+      "needsClarification": true
+    }
+  },
+  {
+    "id": "TC-05",
+    "description": "Relative reference to previous transaction",
+    "input": "same as last time",
+    "category": "RELATIVE_REFERENCE",
+    "expected": {
+      "reference": {
+        "type": "PREVIOUS_TRANSACTION",
+        "value": "same as last time"
+      },
+      "needsClarification": true
+    }
+  },
+  {
+    "id": "TC-06",
+    "description": "Relative reference with quantity",
+    "input": "last time maathiri rendu",
+    "category": "RELATIVE_REFERENCE",
+    "expected": {
+      "quantity": 2,
+      "reference": {
+        "type": "PREVIOUS_TRANSACTION",
+        "value": "last time maathiri"
+      },
+      "needsClarification": true
+    }
+  },
+  {
+    "id": "TC-07",
+    "description": "Pure Tamil script credit",
+    "input": "ரவிக்கு 50 ரூபாய் சேர்",
+    "category": "TAMIL_SCRIPT",
+    "expected": {
+      "person": "ரவி",
+      "amount": 50,
+      "transactionType": "CREDIT",
+      "needsClarification": false
+    }
+  },
+  {
+    "id": "TC-08",
+    "description": "Pure Tamil script payment",
+    "input": "ரவி 100 கொடுத்தான்",
+    "category": "TAMIL_SCRIPT",
+    "expected": {
+      "person": "ரவி",
+      "amount": 100,
+      "transactionType": "PAYMENT",
+      "needsClarification": false
+    }
+  },
+  {
+    "id": "TC-09",
+    "description": "Payment in English/Tanglish",
+    "input": "Suresh paid 250",
+    "category": "DIRECT_PAYMENT",
+    "expected": {
+      "person": "Suresh",
+      "amount": 250,
+      "transactionType": "PAYMENT",
+      "needsClarification": false
+    }
+  },
+  {
+    "id": "TC-10",
+    "description": "Credit with item, quantity, and amount",
+    "input": "Kumar-ku 2 packet milk add pannu, 60 rupees",
+    "category": "DIRECT_CREDIT",
+    "expected": {
+      "person": "Kumar",
+      "item": "milk",
+      "quantity": 2,
+      "amount": 60,
+      "transactionType": "CREDIT",
+      "needsClarification": false
+    }
+  },
+  {
+    "id": "TC-11",
+    "description": "Ambiguous person with amount (safety violation if hallucinated)",
+    "input": "50 rupees add pannu",
+    "category": "AMBIGUOUS_PERSON",
+    "expected": {
+      "person": null,
+      "amount": 50,
+      "transactionType": "CREDIT",
+      "needsClarification": true
+    }
+  },
+  {
+    "id": "TC-12",
+    "description": "Ambiguous amount with person",
+    "input": "Ramesh-ku add pannu",
+    "category": "MISSING_AMOUNT",
+    "expected": {
+      "person": "Ramesh",
+      "amount": null,
+      "transactionType": "CREDIT",
+      "needsClarification": true
+    }
+  },
+  {
+    "id": "TC-13",
+    "description": "Ambiguous transaction type (no credit/payment indicator)",
+    "input": "Ravi 50",
+    "category": "AMBIGUOUS_TYPE",
+    "expected": {
+      "person": "Ravi",
+      "amount": 50,
+      "needsClarification": true
+    }
+  },
+  {
+    "id": "TC-14",
+    "description": "Vendor nickname usage with item",
+    "input": "Mottai Ravi-ku 40 rupees tea podu",
+    "category": "NICKNAME",
+    "expected": {
+      "person": "Ravi",
+      "nickname": "Mottai",
+      "item": "tea",
+      "amount": 40,
+      "transactionType": "CREDIT",
+      "needsClarification": false
+    }
+  },
+  {
+    "id": "TC-15",
+    "description": "Informal settlement / payment slang",
+    "input": "Mani settle pannitaan 300",
+    "category": "DIRECT_PAYMENT",
+    "expected": {
+      "person": "Mani",
+      "amount": 300,
+      "transactionType": "PAYMENT",
+      "needsClarification": false
+    }
+  },
+  {
+    "id": "TC-16",
+    "description": "Partial debt payment against balance",
+    "input": "Ganesh balance la 150 kuduthaar",
+    "category": "DIRECT_PAYMENT",
+    "expected": {
+      "person": "Ganesh",
+      "amount": 150,
+      "transactionType": "PAYMENT",
+      "needsClarification": false
+    }
+  },
+  {
+    "id": "TC-17",
+    "description": "Colloquial credit verb (yethiko / rooba)",
+    "input": "Selvam kitta 80 rooba yethiko",
+    "category": "COLLOQUIAL",
+    "expected": {
+      "person": "Selvam",
+      "amount": 80,
+      "transactionType": "CREDIT",
+      "needsClarification": false
+    }
+  },
+  {
+    "id": "TC-18",
+    "description": "Spoken Tamil number words (rendu tea, 20 rupees)",
+    "input": "Karthik-ku rendu tea add pannu, 20 rupees",
+    "category": "NUMBER_WORDS",
+    "expected": {
+      "person": "Karthik",
+      "item": "tea",
+      "quantity": 2,
+      "amount": 20,
+      "transactionType": "CREDIT",
+      "needsClarification": false
+    }
+  },
+  {
+    "id": "TC-19",
+    "description": "Relative reference to third-party account",
+    "input": "add it to his brother's account 100",
+    "category": "RELATIVE_REFERENCE",
+    "expected": {
+      "amount": 100,
+      "reference": {
+        "type": "THIRD_PARTY",
+        "value": "his brother's account"
+      },
+      "needsClarification": true
+    }
+  },
+  {
+    "id": "TC-20",
+    "description": "Correction scenario: vendor corrects amount after mishearing",
+    "input": "No 500 illa, 50",
+    "category": "CORRECTION",
+    "context": {
+      "currentDraft": {
+        "person": "Ravi",
+        "amount": 500,
+        "transactionType": "CREDIT"
+      }
+    },
+    "expected": {
+      "person": "Ravi",
+      "amount": 50,
+      "transactionType": "CREDIT",
+      "needsClarification": false
+    }
+  }
+]
