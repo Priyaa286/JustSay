@@ -1,5 +1,21 @@
+# Dependencies
 node_modules/
+
+# Environment configuration
 .env
+.env.local
+
+# Database
 *.db
 *.db-journal
+
+# Uploads
 uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS artifacts
+.DS_Store
+Thumbs.db
