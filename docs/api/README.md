@@ -341,3 +341,64 @@ Transcribes audio recordings of vendor speech into Tamil / Tanglish text using G
   - `400 Bad Request`: Missing audio field, unsupported format, or file exceeding 25 MB limit.
   - `500 Internal Server Error`: Groq API error or missing server API key.
 
+---
+
+### 5. LLM Structured Extraction API
+
+#### `POST /api/extract`
+Extracts structured transaction fields from spoken Tamil / Tanglish / English transcripts using Groq Llama 3.3 70B (`llama-3.3-70b-versatile`).
+
+> **NOTE:** This endpoint is stateless and performs **NO database operations**. Amounts are returned in **Rupees** (not paise).
+
+- **Request Body**:
+```json
+{
+  "transcript": "Ravi ku 50 rupees paal packet add pannu"
+}
+```
+
+- **Validation Rules**:
+  - `transcript`: Required non-empty string.
+  - Unexpected fields are rejected (`400 Bad Request`).
+
+- **Response `200 OK`**:
+```json
+{
+  "success": true,
+  "message": "Structured extraction completed successfully",
+  "data": {
+    "person": "Ravi",
+    "nickname": null,
+    "item": "paal packet",
+    "quantity": null,
+    "amount": 50,
+    "transactionType": "CREDIT",
+    "reference": null,
+    "confidence": 0.95,
+    "needsClarification": false
+  }
+}
+```
+
+- **Ambiguous Transcript Example**:
+  - Request: `{ "transcript": "Ravi ku 50 rupees" }` (Direction CREDIT/PAYMENT not specified)
+  - Response:
+```json
+{
+  "success": true,
+  "message": "Structured extraction completed successfully",
+  "data": {
+    "person": "Ravi",
+    "nickname": null,
+    "item": null,
+    "quantity": null,
+    "amount": 50,
+    "transactionType": null,
+    "reference": null,
+    "confidence": 0.6,
+    "needsClarification": true
+  }
+}
+```
+
+
