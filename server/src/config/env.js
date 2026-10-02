@@ -8,7 +8,8 @@ const envSchema = z.object({
   PORT: z.string().default('5000').transform((val) => parseInt(val, 10)),
   DATABASE_URL: z.string().optional().default('file:./dev.db'),
   GROQ_API_KEY: z.string().optional(),
-  CLIENT_URL: z.string().default('http://localhost:5173')
+  CLIENT_URL: z.string().default('http://localhost:5173'),
+  MOCK_TRANSCRIPTION: z.string().optional().default('false').transform((val) => val.toLowerCase() === 'true')
 });
 
 const parseEnv = () => {

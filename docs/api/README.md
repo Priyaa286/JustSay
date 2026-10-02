@@ -313,3 +313,31 @@ Returns a customer's profile, calculated balance, and all confirmed transactions
   }
 }
 ```
+
+---
+
+### 4. Speech-to-Text Transcription API
+
+#### `POST /api/transcribe`
+Transcribes audio recordings of vendor speech into Tamil / Tanglish text using Groq Whisper-large-v3.
+
+- **Request Format**: `multipart/form-data`
+- **Field Name**: `audio`
+- **Supported Formats**: `.webm`, `.wav`, `.mp3`, `.m4a`, `.mp4`, `.mpeg`, `.mpga`, `.ogg`, `.flac`
+- **Size Limit**: 25 MB max
+
+- **Response `200 OK`**:
+```json
+{
+  "success": true,
+  "message": "Audio transcribed successfully",
+  "data": {
+    "transcript": "Ravi ku 50 rupees paal packet add pannu"
+  }
+}
+```
+
+- **Error Responses**:
+  - `400 Bad Request`: Missing audio field, unsupported format, or file exceeding 25 MB limit.
+  - `500 Internal Server Error`: Groq API error or missing server API key.
+
