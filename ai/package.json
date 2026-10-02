@@ -5,6 +5,7 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
+    "demo": "node demo.js",
     "test": "node tests/extraction.test.js && node tests/transcription.test.js",
     "test:extraction": "node tests/extraction.test.js",
     "test:transcription": "node tests/transcription.test.js"

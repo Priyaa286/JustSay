@@ -31,9 +31,9 @@ export const TransactionSchema = z.object({
   quantity: z.number().positive().nullable().default(null).describe('Quantity of items if specified'),
   amount: z.number().positive().nullable().describe('Monetary amount in INR (rupees)'),
   transactionType: TransactionTypeSchema.nullable().describe('CREDIT or PAYMENT'),
-  reference: ReferenceSchema,
-  confidence: z.number().min(0).max(1).describe('Extraction confidence score between 0.0 and 1.0'),
-  needsClarification: z.boolean().describe('True if information is missing, ambiguous, or needs vendor clarification'),
+  reference: ReferenceSchema.default(null),
+  confidence: z.number().min(0).max(1).default(0.9).describe('Extraction confidence score between 0.0 and 1.0'),
+  needsClarification: z.boolean().default(false).describe('True if information is missing, ambiguous, or needs vendor clarification'),
   clarificationReason: z.string().nullable().default(null).describe('Explanation of why clarification is needed, if any')
 });
 

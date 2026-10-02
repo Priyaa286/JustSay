@@ -41,7 +41,20 @@ export const RawExtractionSchema = z.object({
  * @returns {object} Validated and safety-checked transaction object
  */
 export function enforceSafetyInvariants(parsedData) {
-  const result = { ...parsedData };
+  const result = {
+    person: null,
+    nickname: null,
+    item: null,
+    quantity: null,
+    amount: null,
+    transactionType: null,
+    reference: null,
+    confidence: 0.9,
+    needsClarification: false,
+    clarificationReason: null,
+    ...parsedData
+  };
+  result.needsClarification = Boolean(result.needsClarification);
   const reasons = [];
 
   // Invariant 1: Missing or invalid amount
