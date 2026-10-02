@@ -1,8 +1,14 @@
 const ledgerService = require('../services/ledger.service');
+const customerService = require('../services/customer.service');
 const { sendSuccess } = require('../utils/response');
 
 const prepareTransaction = async (req, res, next) => {
   try {
+    // If person is provided instead of customerId, resolve it
+    if (!req.body.customerId && req.body.person) {
+      const customer = await customerService.resolveCustomerByName(req.body.person);
+      req.body.customerId = customer.id;
+    }
     const transaction = await ledgerService.createTransaction(req.body);
     return sendSuccess(res, 'Transaction prepared successfully', transaction, 201);
   } catch (error) {

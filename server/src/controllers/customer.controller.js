@@ -28,8 +28,19 @@ const createCustomer = async (req, res, next) => {
   }
 };
 
+const resolveCustomer = async (req, res, next) => {
+  try {
+    const { person } = req.query;
+    const customer = await customerService.resolveCustomerByName(person);
+    return sendSuccess(res, 'Customer resolved successfully', customer);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllCustomers,
   getCustomerById,
-  createCustomer
+  createCustomer,
+  resolveCustomer
 };
