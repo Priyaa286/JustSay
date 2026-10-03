@@ -11,7 +11,7 @@ const envSchema = z.object({
   CLIENT_URL: z.string().default('http://localhost:5173'),
   MOCK_TRANSCRIPTION: z.string().optional().default('false').transform((val) => val.toLowerCase() === 'true'),
   GROQ_WHISPER_MODEL: z.string().optional().default('whisper-large-v3'),
-  GROQ_LLAMA_MODEL: z.string().optional().default('llama-3.3-70b-versatile')
+  GROQ_LLAMA_MODEL: z.string().optional().default('openai/gpt-oss-120b')
 });
 
 const parseEnv = () => {
