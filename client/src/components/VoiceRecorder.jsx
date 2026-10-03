@@ -62,6 +62,8 @@ export default function VoiceRecorder({ onVoiceProcessed, onError, disabled }) {
       }
 
       const recorder = new MediaRecorder(stream, { mimeType });
+      console.log('🎙️ REQUESTED MIME:', mimeType);
+      console.log('🎙️ ACTUAL RECORDER MIME:', recorder.mimeType);
       mediaRecorderRef.current = recorder;
       audioChunksRef.current = [];
 
@@ -79,6 +81,19 @@ export default function VoiceRecorder({ onVoiceProcessed, onError, disabled }) {
         }
 
         const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+        console.log('📦 BLOB TYPE:', audioBlob.type);
+        console.log('📦 BLOB SIZE:', audioBlob.size);
+
+        const header = new Uint8Array(
+          await audioBlob.slice(0, 16).arrayBuffer()
+        );
+
+        console.log(
+          '🔍 BLOB HEADER:',
+          Array.from(header)
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join(' ')
+        );
         if (audioBlob.size === 0) {
           if (onError) onError('No audio data captured. Please try speaking again.');
           return;
@@ -144,8 +159,8 @@ export default function VoiceRecorder({ onVoiceProcessed, onError, disabled }) {
         {isRecording
           ? 'Listening...'
           : isProcessing
-          ? 'Understanding transaction...'
-          : 'Speak your transaction'}
+            ? 'Understanding transaction...'
+            : 'Speak your transaction'}
       </h2>
 
       <p className="hero-subtitle">

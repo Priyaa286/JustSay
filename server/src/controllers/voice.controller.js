@@ -22,7 +22,12 @@ const processVoiceTransaction = async (req, res, next) => {
 
     filePath = req.file.path;
 
-    // 1. Transcribe audio using Sweety's Whisper pipeline
+    // 1. Transcribe audio using Sweety's Whisper pipeli
+
+    console.log('🎤 AUDIO FILE:', filePath);
+    console.log('📦 AUDIO SIZE:', fs.statSync(filePath).size);
+    console.log('🔍 AUDIO HEADER:', fs.readFileSync(filePath).subarray(0, 16).toString('hex'));
+
     const transcriptionResult = await aiService.transcribeAudio(filePath);
     const normalizedTranscript = (transcriptionResult.normalizedTranscript || transcriptionResult.transcript || '').trim();
 

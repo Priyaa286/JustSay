@@ -5,10 +5,15 @@ import PendingTransactionCard from './components/PendingTransactionCard';
 import ClarifyCard from './components/ClarifyCard';
 import CorrectionModal from './components/CorrectionModal';
 import NewCustomerCard from './components/NewCustomerCard';
+import CustomerList from './components/CustomerList';
+import CustomerLedger from './components/CustomerLedger';
 import api from './services/api';
 
 export default function App() {
   const [isOnline, setIsOnline] = useState(false);
+  const [activeTab, setActiveTab] = useState('voice'); // 'voice' | 'customers'
+  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+
   const [pendingData, setPendingData] = useState(null);
   const [clarifyData, setClarifyData] = useState(null);
   const [newCustomerData, setNewCustomerData] = useState(null);
@@ -17,7 +22,6 @@ export default function App() {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const [isCreatingCustomer, setIsCreatingCustomer] = useState(false);
-
   const [isConfirming, setIsConfirming] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const [isCorrectionOpen, setIsCorrectionOpen] = useState(false);
@@ -154,102 +158,148 @@ export default function App() {
     setErrorMessage(null);
   };
 
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === 'customers') {
+      setSelectedCustomerId(null);
+    }
+  };
+
   return (
     <>
-      <Header isOnline={isOnline} />
+      <Header
+        isOnline={isOnline}
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+      />
 
       <main className="app-main">
-        {/* Global Error Banner */}
-        {errorMessage && (
-          <div className="error-banner">
-            <span>⚠️ {errorMessage}</span>
-            <button type="button" onClick={() => setErrorMessage(null)}>✕</button>
-          </div>
-        )}
-
-        {/* Cancellation Message Banner */}
-        {cancelledMessage && !pendingData && !confirmedData && (
-          <div className="card" style={{ background: '#F8FAFC', borderColor: '#CBD5E1', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>
-              ✕ {cancelledMessage}
-            </span>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              style={{ padding: '6px 12px', fontSize: '12px' }}
-              onClick={handleResetFlow}
-            >
-              Dismiss
-            </button>
-          </div>
-        )}
-
-        {/* Confirmed Success Card */}
-        {confirmedData && !pendingData && (
-          <div className="success-card">
-            <div className="success-icon-badge">✓</div>
-            <div className="success-title">Transaction Confirmed!</div>
-            <p style={{ fontSize: '14px', color: '#065F46', margin: '-4px 0 4px' }}>
-              Successfully recorded in the customer ledger.
-            </p>
-
-            {confirmedData.customer && (
-              <div className="balance-pill">
-                {confirmedData.customer.name}&apos;s Updated Balance:{' '}
-                <strong>₹{(confirmedData.customer.balance / 100).toFixed(2)}</strong>
+        {activeTab === 'voice' && (
+          <>
+            {/* Global Error Banner */}
+            {errorMessage && (
+              <div className="error-banner">
+                <span>⚠️ {errorMessage}</span>
+                <button type="button" onClick={() => setErrorMessage(null)}>✕</button>
               </div>
             )}
 
-            <button
-              type="button"
-              className="btn btn-primary"
-              style={{ marginTop: '12px', width: '100%' }}
-              onClick={handleResetFlow}
-            >
-              🎙️ Record Next Transaction
-            </button>
-          </div>
+            {/* Cancellation Message Banner */}
+            {cancelledMessage && !pendingData && !confirmedData && (
+              <div className="card" style={{ background: '#F8FAFC', borderColor: '#CBD5E1', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>
+                  ✕ {cancelledMessage}
+                </span>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  style={{ padding: '6px 12px', fontSize: '12px' }}
+                  onClick={handleResetFlow}
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+
+            {/* Confirmed Success Card */}
+            {confirmedData && !pendingData && (
+              <div className="success-card">
+                <div className="success-icon-badge">✓</div>
+                <div className="success-title">Transaction Confirmed!</div>
+                <p style={{ fontSize: '14px', color: '#065F46', margin: '-4px 0 4px' }}>
+                  Successfully recorded in the customer ledger.
+                </p>
+
+                {confirmedData.customer && (
+                  <div className="balance-pill">
+                    {confirmedData.customer.name}&apos;s Updated Balance:{' '}
+                    <strong>₹{(confirmedData.customer.balance / 100).toFixed(2)}</strong>
+                  </div>
+                )}
+
+                <div style={{ display: 'flex', gap: '8px', width: '100%', marginTop: '8px' }}>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    style={{ flex: 1 }}
+                    onClick={handleResetFlow}
+                  >
+                    🎙️ Record Next
+                  </button>
+                  {confirmedData.customer && (
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      style={{ flex: 1 }}
+                      onClick={() => {
+                        handleResetFlow();
+                        setActiveTab('customers');
+                        setSelectedCustomerId(confirmedData.customer.id);
+                      }}
+                    >
+                      📜 View Ledger
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Clarify Needed Card */}
+            {clarifyData && !pendingData && !confirmedData && !newCustomerData && (
+              <ClarifyCard
+                data={clarifyData}
+                onDismiss={() => setClarifyData(null)}
+              />
+            )}
+
+            {/* New Customer Detected Card */}
+            {newCustomerData && !pendingData && !confirmedData && (
+              <NewCustomerCard
+                data={newCustomerData}
+                isCreating={isCreatingCustomer}
+                onCreate={handleCreateCustomer}
+                onCancel={() => {
+                  setNewCustomerData(null);
+                  setCancelledMessage('Transaction was cancelled. No changes made.');
+                }}
+              />
+            )}
+
+            {/* Pending Transaction Review Card */}
+            {pendingData && (
+              <PendingTransactionCard
+                data={pendingData}
+                onConfirm={handleConfirm}
+                onCorrect={() => setIsCorrectionOpen(true)}
+                onCancel={handleCancel}
+                isConfirming={isConfirming}
+                isCancelling={isCancelling}
+              />
+            )}
+
+            {/* Voice Recording Interaction */}
+            <VoiceRecorder
+              onVoiceProcessed={handleVoiceProcessed}
+              onError={(err) => setErrorMessage(err)}
+              disabled={isConfirming || isCancelling || isCreatingCustomer}
+            />
+          </>
         )}
 
-        {/* Clarify Needed Card */}
-        {clarifyData && !pendingData && !confirmedData && !newCustomerData && (
-          <ClarifyCard
-            data={clarifyData}
-            onDismiss={() => setClarifyData(null)}
-          />
+        {activeTab === 'customers' && (
+          <>
+            {selectedCustomerId ? (
+              <CustomerLedger
+                customerId={selectedCustomerId}
+                onBack={() => setSelectedCustomerId(null)}
+              />
+            ) : (
+              <CustomerList
+                onSelectCustomer={(id) => setSelectedCustomerId(id)}
+              />
+            )}
+          </>
         )}
-
-        {/* New Customer Detected Card */}
-        {newCustomerData && !pendingData && !confirmedData && (
-          <NewCustomerCard
-            data={newCustomerData}
-            isCreating={isCreatingCustomer}
-            onCreate={handleCreateCustomer}
-            onCancel={() => {
-              setNewCustomerData(null);
-              setCancelledMessage('Transaction was cancelled. No changes made.');
-            }}
-          />
-        )}
-
-        {/* Pending Transaction Review Card */}
-        {pendingData && (
-          <PendingTransactionCard
-            data={pendingData}
-            onConfirm={handleConfirm}
-            onCorrect={() => setIsCorrectionOpen(true)}
-            onCancel={handleCancel}
-            isConfirming={isConfirming}
-            isCancelling={isCancelling}
-          />
-        )}
-
-        {/* Voice Recording Interaction */}
-        <VoiceRecorder
-          onVoiceProcessed={handleVoiceProcessed}
-          onError={(err) => setErrorMessage(err)}
-          disabled={isConfirming || isCancelling || isCreatingCustomer}
-        />
       </main>
 
       {/* Inline Correction Drawer / Modal */}
@@ -266,3 +316,4 @@ export default function App() {
     </>
   );
 }
+

@@ -726,3 +726,446 @@ body {
   border-color: var(--primary-terracotta);
   background: white;
 }
+
+/* Navigation Tabs & Header Adjustment */
+.app-header {
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.nav-tabs {
+  display: flex;
+  background: var(--bg-cream-soft);
+  border: 1px solid var(--border-cream);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  gap: 4px;
+  width: 100%;
+}
+
+.nav-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-tab.active {
+  background: var(--bg-card);
+  color: var(--primary-terracotta);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--border-cream);
+}
+
+/* Customer List View */
+.customer-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: slide-up 0.25s ease-out;
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.list-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.list-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.btn-icon {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.search-box {
+  width: 100%;
+}
+
+.search-input {
+  background: var(--bg-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.customer-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.customer-row-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-cream);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.customer-row-card:hover {
+  border-color: var(--primary-terracotta);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.customer-row-card:active {
+  transform: translateY(0);
+}
+
+.customer-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-terracotta), #E06D44);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+  box-shadow: 0 3px 8px var(--primary-glow);
+  flex-shrink: 0;
+}
+
+.avatar-circle-lg {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-terracotta), #E06D44);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 22px;
+  box-shadow: 0 4px 12px var(--primary-glow);
+  flex-shrink: 0;
+}
+
+.name-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.customer-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.customer-nickname {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.customer-balance-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.balance-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.balance-badge.due {
+  background: var(--badge-credit-bg);
+  border: 1px solid rgba(197, 48, 48, 0.2);
+}
+
+.balance-badge.due .balance-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--badge-credit-text);
+  letter-spacing: 0.5px;
+}
+
+.balance-badge.due .balance-amount {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--badge-credit-text);
+}
+
+.balance-badge.settled {
+  background: var(--badge-payment-bg);
+  border: 1px solid rgba(46, 125, 50, 0.2);
+}
+
+.balance-badge.settled .balance-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--badge-payment-text);
+  letter-spacing: 0.5px;
+}
+
+.balance-badge.settled .balance-amount {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--badge-payment-text);
+}
+
+.balance-badge.advance {
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+}
+
+.balance-badge.advance .balance-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #1D4ED8;
+  letter-spacing: 0.5px;
+}
+
+.balance-badge.advance .balance-amount {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1D4ED8;
+}
+
+.chevron-arrow {
+  font-size: 20px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+/* Customer Ledger View */
+.ledger-view-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: slide-up 0.25s ease-out;
+}
+
+.back-btn {
+  align-self: flex-start;
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.customer-header-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-cream);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.customer-header-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.customer-name-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.customer-title-name {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.customer-title-nick {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.balance-hero-box {
+  background: var(--bg-cream-soft);
+  border: 1px solid var(--border-cream);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.balance-hero-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+.balance-hero-value {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.balance-hero-value.due {
+  color: var(--danger);
+}
+
+.balance-hero-value.settled {
+  color: var(--success);
+}
+
+.balance-hero-value.advance {
+  color: #1D4ED8;
+}
+
+.balance-hero-pill {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  margin-top: 4px;
+}
+
+.balance-hero-pill.due {
+  background: var(--badge-credit-bg);
+  color: var(--badge-credit-text);
+}
+
+.balance-hero-pill.settled {
+  background: var(--badge-payment-bg);
+  color: var(--badge-payment-text);
+}
+
+.balance-hero-pill.advance {
+  background: #EFF6FF;
+  color: #1D4ED8;
+}
+
+.ledger-history-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.transaction-item-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-cream);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+.transaction-item-card.credit {
+  border-left: 4px solid var(--danger);
+}
+
+.transaction-item-card.payment {
+  border-left: 4px solid var(--success);
+}
+
+.tx-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tx-timestamp {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.tx-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tx-item-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.tx-amount {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.tx-amount.credit {
+  color: var(--danger);
+}
+
+.tx-amount.payment {
+  color: var(--success);
+}
+
+.tx-transcript-quote {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-style: italic;
+  background: var(--bg-cream-soft);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-cream);
+}
+
