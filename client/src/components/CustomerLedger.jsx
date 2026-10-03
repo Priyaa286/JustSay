@@ -134,7 +134,7 @@ export default function CustomerLedger({ customerId, onBack }) {
                 <div key={tx.id} className={`transaction-item-card ${isCredit ? 'credit' : 'payment'}`}>
                   <div className="tx-top-row">
                     <span className={`transaction-type-badge ${isCredit ? 'type-credit' : 'type-payment'}`}>
-                      {isCredit ? '🔴 CREDIT (Udhaar)' : '🟢 PAYMENT (Jama)'}
+                      {isCredit ? '🔴 CREDIT (வரவு)' : '🟢 PAYMENT (கடன்)'}
                     </span>
                     <span className="tx-timestamp">
                       {formattedDate} • {formattedTime}
