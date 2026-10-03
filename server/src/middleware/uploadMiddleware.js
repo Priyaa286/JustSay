@@ -11,12 +11,18 @@ const handleAudioUpload = (req, res, next) => {
         if (err.code === 'LIMIT_FILE_SIZE') {
           const limitErr = new Error('Audio file size exceeds maximum limit of 25 MB.');
           limitErr.statusCode = 400;
+          limitErr.errorCode = 'AUDIO_TOO_LARGE';
+          limitErr.isPublic = true;
           return next(limitErr);
         }
         const error = new Error(`File upload error: ${err.message}`);
         error.statusCode = 400;
+        error.errorCode = 'AUDIO_UPLOAD_FAILED';
+        error.isPublic = true;
         return next(error);
       }
+      err.errorCode = err.errorCode || 'AUDIO_UPLOAD_FAILED';
+      err.isPublic = true;
       return next(err);
     }
     next();

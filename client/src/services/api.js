@@ -137,6 +137,19 @@ export const api = {
   async getAllLedger() {
     const res = await fetch(endpoint('/api/ledger'));
     return handleResponse(res);
+  },
+
+  /**
+   * Creates a new customer
+   * @param {object} payload - { name: string, nickname?: string }
+   */
+  async createCustomer(payload) {
+    const res = await fetch(endpoint('/api/customers'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    return handleResponse(res);
   }
 };
 

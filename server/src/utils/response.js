@@ -15,14 +15,14 @@ const sendSuccess = (res, message, data = null, statusCode = 200) => {
   return sendResponse(res, statusCode, true, message, data);
 };
 
-const sendError = (res, message, statusCode = 500, errors = null) => {
+const sendError = (res, message, statusCode = 500, errorCode = null) => {
   const responseBody = {
     success: false,
     message
   };
 
-  if (errors) {
-    responseBody.errors = errors;
+  if (errorCode) {
+    responseBody.errorCode = errorCode;
   }
 
   return res.status(statusCode).json(responseBody);

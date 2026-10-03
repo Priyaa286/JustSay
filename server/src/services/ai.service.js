@@ -40,8 +40,28 @@ const transcribeAudio = async (filePath, options = {}) => {
     return result;
   } catch (error) {
     console.error('❌ AI Speech-to-Text Error:', error.message);
-    const err = new Error(error.message || 'Speech-to-text transcription failed.');
-    err.statusCode = error.status || 500;
+    let publicMessage = 'Speech-to-text transcription failed. Please try speaking again.';
+    let errorCode = 'TRANSCRIPTION_FAILED';
+    let statusCode = 500;
+
+    if (error.status === 429) {
+      publicMessage = 'Voice service is currently busy. Please wait a moment and try again.';
+      errorCode = 'AI_RATE_LIMITED';
+      statusCode = 429;
+    } else if (error.status === 401 || error.status === 403) {
+      errorCode = 'AI_AUTH_FAILED';
+    } else if (error.status >= 500) {
+      publicMessage = 'AI service is temporarily unavailable. Please try again later.';
+      errorCode = 'AI_UNAVAILABLE';
+    } else if (error.code === 'ECONNABORTED' || (error.message && error.message.toLowerCase().includes('timeout'))) {
+      publicMessage = 'Connection timed out. Please check your internet and try again.';
+      errorCode = 'AI_TIMEOUT';
+    }
+
+    const err = new Error(publicMessage);
+    err.statusCode = statusCode;
+    err.errorCode = errorCode;
+    err.isPublic = true;
     throw err;
   }
 };
@@ -107,8 +127,28 @@ const extractTransaction = async (transcript, context = null, options = {}) => {
     return result;
   } catch (error) {
     console.error('❌ AI Extraction Error:', error.message);
-    const err = new Error(error.message || 'Structured transaction extraction failed.');
-    err.statusCode = error.status || 500;
+    let publicMessage = 'Failed to extract transaction details. Please try speaking more clearly.';
+    let errorCode = 'EXTRACTION_FAILED';
+    let statusCode = 500;
+
+    if (error.status === 429) {
+      publicMessage = 'Voice service is currently busy. Please wait a moment and try again.';
+      errorCode = 'AI_RATE_LIMITED';
+      statusCode = 429;
+    } else if (error.status === 401 || error.status === 403) {
+      errorCode = 'AI_AUTH_FAILED';
+    } else if (error.status >= 500) {
+      publicMessage = 'AI service is temporarily unavailable. Please try again later.';
+      errorCode = 'AI_UNAVAILABLE';
+    } else if (error.code === 'ECONNABORTED' || (error.message && error.message.toLowerCase().includes('timeout'))) {
+      publicMessage = 'Connection timed out. Please check your internet and try again.';
+      errorCode = 'AI_TIMEOUT';
+    }
+
+    const err = new Error(publicMessage);
+    err.statusCode = statusCode;
+    err.errorCode = errorCode;
+    err.isPublic = true;
     throw err;
   }
 };
@@ -144,8 +184,28 @@ const correctTransaction = async (currentDraft, correctionTranscript, options = 
     return result;
   } catch (error) {
     console.error('❌ AI Correction Error:', error.message);
-    const err = new Error(error.message || 'Transaction draft correction failed.');
-    err.statusCode = error.status || 500;
+    let publicMessage = 'Failed to correct transaction. Please try again.';
+    let errorCode = 'CORRECTION_FAILED';
+    let statusCode = 500;
+
+    if (error.status === 429) {
+      publicMessage = 'Voice service is currently busy. Please wait a moment and try again.';
+      errorCode = 'AI_RATE_LIMITED';
+      statusCode = 429;
+    } else if (error.status === 401 || error.status === 403) {
+      errorCode = 'AI_AUTH_FAILED';
+    } else if (error.status >= 500) {
+      publicMessage = 'AI service is temporarily unavailable. Please try again later.';
+      errorCode = 'AI_UNAVAILABLE';
+    } else if (error.code === 'ECONNABORTED' || (error.message && error.message.toLowerCase().includes('timeout'))) {
+      publicMessage = 'Connection timed out. Please check your internet and try again.';
+      errorCode = 'AI_TIMEOUT';
+    }
+
+    const err = new Error(publicMessage);
+    err.statusCode = statusCode;
+    err.errorCode = errorCode;
+    err.isPublic = true;
     throw err;
   }
 };

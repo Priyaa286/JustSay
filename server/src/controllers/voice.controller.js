@@ -13,8 +13,10 @@ const processVoiceTransaction = async (req, res, next) => {
 
   try {
     if (!req.file) {
-      const error = new Error('No audio file uploaded. Please send audio file in "audio" field.');
+      const error = new Error('No audio file uploaded. Please speak again.');
       error.statusCode = 400;
+      error.errorCode = 'AUDIO_MISSING';
+      error.isPublic = true;
       throw error;
     }
 
@@ -51,7 +53,16 @@ const processVoiceTransaction = async (req, res, next) => {
     try {
       customer = await customerService.resolveCustomerByName(extractedData.person);
     } catch (resolveError) {
-      // Unresolved or ambiguous customer -> DO NOT create transaction, return CLARIFY
+      if (resolveError.code === 'CUSTOMER_NOT_FOUND') {
+        return sendSuccess(res, 'New customer detected', {
+          status: 'NEW_CUSTOMER_DETECTED',
+          transcript: normalizedTranscript,
+          extraction: extractedData,
+          customer: { name: extractedData.person }
+        }, 200);
+      }
+
+      // Ambiguous customer -> DO NOT create transaction, return CLARIFY
       return sendSuccess(res, 'Customer could not be resolved', {
         status: 'CLARIFY',
         transcript: normalizedTranscript,

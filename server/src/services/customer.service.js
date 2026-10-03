@@ -23,6 +23,30 @@ const getCustomerById = async (id) => {
 const createCustomer = async (data) => {
   const { name, nickname } = data;
 
+  // Duplicate protection (deterministic case-insensitive check)
+  const allCustomers = await prisma.customer.findMany();
+  const nameNorm = name.trim().replace(/\s+/g, ' ').toLowerCase();
+  const nicknameNorm = nickname ? nickname.trim().replace(/\s+/g, ' ').toLowerCase() : null;
+
+  const duplicates = allCustomers.filter((c) => {
+    const cNameNorm = c.name.trim().replace(/\s+/g, ' ').toLowerCase();
+    const cNickNorm = c.nickname ? c.nickname.trim().replace(/\s+/g, ' ').toLowerCase() : null;
+    
+    return (
+      cNameNorm === nameNorm ||
+      (nicknameNorm && cNickNorm === nicknameNorm) ||
+      (nicknameNorm && cNameNorm === nicknameNorm) ||
+      (cNickNorm && cNickNorm === nameNorm)
+    );
+  });
+
+  if (duplicates.length > 0) {
+    const names = duplicates.map((d) => d.name).join(', ');
+    const err = new Error(`Customer already exists: ${names}`);
+    err.statusCode = 409;
+    throw err;
+  }
+
   return await prisma.customer.create({
     data: {
       name,

@@ -4,15 +4,19 @@ import VoiceRecorder from './components/VoiceRecorder';
 import PendingTransactionCard from './components/PendingTransactionCard';
 import ClarifyCard from './components/ClarifyCard';
 import CorrectionModal from './components/CorrectionModal';
+import NewCustomerCard from './components/NewCustomerCard';
 import api from './services/api';
 
 export default function App() {
   const [isOnline, setIsOnline] = useState(false);
   const [pendingData, setPendingData] = useState(null);
   const [clarifyData, setClarifyData] = useState(null);
+  const [newCustomerData, setNewCustomerData] = useState(null);
   const [confirmedData, setConfirmedData] = useState(null);
   const [cancelledMessage, setCancelledMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  const [isCreatingCustomer, setIsCreatingCustomer] = useState(false);
 
   const [isConfirming, setIsConfirming] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
@@ -46,13 +50,20 @@ export default function App() {
     if (data.status === 'PENDING') {
       setPendingData(data);
       setClarifyData(null);
+      setNewCustomerData(null);
     } else if (data.status === 'CLARIFY') {
       setClarifyData(data);
       setPendingData(null);
+      setNewCustomerData(null);
+    } else if (data.status === 'NEW_CUSTOMER_DETECTED') {
+      setNewCustomerData(data);
+      setPendingData(null);
+      setClarifyData(null);
     } else {
       // Fallback
       setPendingData(data);
       setClarifyData(null);
+      setNewCustomerData(null);
     }
   };
 
@@ -92,9 +103,52 @@ export default function App() {
     }
   };
 
+  const handleCreateCustomer = async (customerName) => {
+    setIsCreatingCustomer(true);
+    setErrorMessage(null);
+    try {
+      const createRes = await api.createCustomer({ name: customerName });
+      const newCustomer = createRes.data;
+      const { extraction, transcript } = newCustomerData;
+
+      const prepRes = await api.prepareTransaction({
+        customerId: newCustomer.id,
+        item: extraction.item,
+        quantity: extraction.quantity,
+        amount: extraction.amount,
+        type: extraction.transactionType,
+        transcript: transcript
+      });
+
+      const pendingTx = prepRes.data;
+      
+      setPendingData({
+        status: 'PENDING',
+        transactionId: pendingTx.id,
+        transcript: transcript,
+        extraction: extraction,
+        customer: {
+          id: newCustomer.id,
+          name: newCustomer.name,
+          nickname: newCustomer.nickname,
+          balancePaise: newCustomer.balance,
+          balanceRupees: newCustomer.balance / 100
+        },
+        transaction: pendingTx
+      });
+      setNewCustomerData(null);
+    } catch (err) {
+      console.error('Create customer error:', err);
+      setErrorMessage(err.message || 'Failed to create customer.');
+    } finally {
+      setIsCreatingCustomer(false);
+    }
+  };
+
   const handleResetFlow = () => {
     setPendingData(null);
     setClarifyData(null);
+    setNewCustomerData(null);
     setConfirmedData(null);
     setCancelledMessage(null);
     setErrorMessage(null);
@@ -158,10 +212,23 @@ export default function App() {
         )}
 
         {/* Clarify Needed Card */}
-        {clarifyData && !pendingData && !confirmedData && (
+        {clarifyData && !pendingData && !confirmedData && !newCustomerData && (
           <ClarifyCard
             data={clarifyData}
             onDismiss={() => setClarifyData(null)}
+          />
+        )}
+
+        {/* New Customer Detected Card */}
+        {newCustomerData && !pendingData && !confirmedData && (
+          <NewCustomerCard
+            data={newCustomerData}
+            isCreating={isCreatingCustomer}
+            onCreate={handleCreateCustomer}
+            onCancel={() => {
+              setNewCustomerData(null);
+              setCancelledMessage('Transaction was cancelled. No changes made.');
+            }}
           />
         )}
 
@@ -181,7 +248,7 @@ export default function App() {
         <VoiceRecorder
           onVoiceProcessed={handleVoiceProcessed}
           onError={(err) => setErrorMessage(err)}
-          disabled={isConfirming || isCancelling}
+          disabled={isConfirming || isCancelling || isCreatingCustomer}
         />
       </main>
 
