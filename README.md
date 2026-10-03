@@ -136,8 +136,8 @@ The application provides understandable feedback after processing a transaction.
      +----+----+              SQLite
      |         |
      v         v
- Whisper    Llama 3.3
-Large-v3       70B
+ Whisper    GPT-OSS
+Large-v3     120B
      |         |
      +----+----+
           |
@@ -169,7 +169,7 @@ The model converts spoken Tamil/Tanglish input into text.
 
 The transcript is passed to:
 
-**Llama 3.3 70B**
+**GPT-OSS 120B (openai/gpt-oss-120b)**
 
 The model interprets the user's intent and extracts the transaction details.
 
@@ -211,7 +211,7 @@ After validation and confirmation, the transaction is stored using **Prisma ORM*
 | API Framework          | Express.js       |
 | AI Pipeline            | Node.js          |
 | Speech Recognition     | Whisper Large-v3 |
-| Language Model         | Llama 3.3 70B    |
+| Language Model         | GPT-OSS 120B     |
 | AI Inference           | Groq API         |
 | Validation             | Zod              |
 | ORM                    | Prisma           |
@@ -297,7 +297,7 @@ Whisper Large-v3
 Tamil/Tanglish Transcript
      |
      v
-Llama 3.3 70B
+GPT-OSS 120B
      |
      v
 Transaction Extraction
@@ -554,11 +554,11 @@ The project supports separate deployment of the frontend and backend.
 
 ### Frontend
 
-The React + Vite client can be deployed using Vercel.
+The React + Vite client is deployed as a **Render Static Site** (or Vercel).
 
 ### Backend
 
-The Node.js + Express application can be deployed using Render.
+The Node.js + Express application is deployed as a **Render Web Service**.
 
 ### Current Project
 
